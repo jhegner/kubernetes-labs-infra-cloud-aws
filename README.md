@@ -22,25 +22,25 @@ Este documento descreve todos os recursos AWS criados via click-ops para o ambie
 ### 🏗️ VPC Principal
 
 - **Nome:** VPC Labs
-- **VPC ID:** `vpc-a6b56ddb`
-- **CIDR:** `172.31.0.0/16`
+- **VPC ID:** `vpc-xxxxxxxxxx`
+- **CIDR:** `172.xx.x.0/16`
 
 ### 🔗 Subnets e Availability Zones
 
-| Subnet ID         | AZ         | CIDR             | Zona |
-| ----------------- | ---------- | ---------------- | ---- |
-| `subnet-59af233f` | us-east-1a | `172.31.0.0/20`  | az1  |
-| `subnet-931c97b2` | us-east-1b | `172.31.80.0/20` | az2  |
-| `subnet-7564b444` | us-east-1c | `172.31.48.0/20` | az3  |
-| `subnet-fa69e0a5` | us-east-1d | `172.31.32.0/20` | az4  |
-| `subnet-2381c72d` | us-east-1f | `172.31.64.0/20` | az5  |
+| Subnet ID           | AZ         | CIDR             | Zona |
+| ------------------- | ---------- | ---------------- | ---- |
+| `subnet-xxxxxxxxxx` | us-east-1a | `172.xx.x.0/20`  | az1  |
+| `subnet-xxxxxxxxxx` | us-east-1b | `172.xx.xx.0/20` | az2  |
+| `subnet-xxxxxxxxxx` | us-east-1c | `172.xx.xx.0/20` | az3  |
+| `subnet-xxxxxxxxxx` | us-east-1d | `172.xx.xx.0/20` | az4  |
+| `subnet-xxxxxxxxxx` | us-east-1f | `172.xx.xx.0/20` | az5  |
 
 ---
 
 ## 🔐 IAM Roles
 
-- 👤 `lab-role-aws-controlplane-managed`
-- 🖥️ `lab-role-aws-ec2nodes-use-services`
+- 👤 `lab-role-aws-xxxxxxxxxx-managed`
+- 🖥️ `lab-role-aws-xxxxxxxxxx-use-services`
 
 ---
 
@@ -48,18 +48,18 @@ Este documento descreve todos os recursos AWS criados via click-ops para o ambie
 
 ### 📡 API Lab
 
-- **API ID:** `ku9lj1zme7`
-- **Endpoint:** `https://ku9lj1zme7.execute-api.us-east-1.amazonaws.com/`
+- **API ID:** `xxxxxxxxxx`
+- **Endpoint:** `https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/`
 
 ### 🔑 Authorizer
 
-- **Nome:** `token-authorizer-apilab`
+- **Nome:** `token-authorizer-xxxxxxxxxx`
 
 ---
 
 ## ⚡ Lambda Functions
 
-- 🔐 `lambda-token-authorizer-apilab`
+- 🔐 `lambda-token-authorizer-xxxxxxxxxx`
 
 ---
 
@@ -67,7 +67,7 @@ Este documento descreve todos os recursos AWS criados via click-ops para o ambie
 
 ### 🌱 Tabela de Agricultura
 
-- **Nome:** `table-agricultura-minha-horta`
+- **Nome:** `table-agricultura-xxxxxxxxxx`
 - **📚 Fonte de Dados:** [Picture This AI](https://www.picturethisai.com/pt/wiki)
 
 ---
@@ -78,7 +78,7 @@ Este documento descreve todos os recursos AWS criados via click-ops para o ambie
 
 | Parâmetro                    | Valor                              |
 | ---------------------------- | ---------------------------------- |
-| **Nome**                     | `lab-eks-cluster`                  |
+| **Nome**                     | `lab-eks-xxxxxxxxxx`               |
 | **Versão**                   | 1.33                               |
 | **Política de Upgrade**      | Standard support                   |
 | **Acesso ao Cluster**        | Allow cluster administrator access |
@@ -89,14 +89,14 @@ Este documento descreve todos os recursos AWS criados via click-ops para o ambie
 
 ### 🌐 Configuração de Rede
 
-- **VPC ID:** `vpc-a6b56ddb` (default)
+- **VPC ID:** `vpc-xxxxxxxxxx` (default)
 - **Subnets:**
-  - `subnet-59af233f`
-  - `subnet-931c97b2`
-  - `subnet-7564b444`
+  - `subnet-xxxxxxxxxx`
+  - `subnet-xxxxxxxxxx`
+  - `subnet-xxxxxxxxxx`
 - **Security Groups:** EKS cria automaticamente
 - **Família de Endereços IP:** IPv4
-- **Range de IPs do Kubernetes Service:** `172.20.0.0/16`
+- **Range de IPs do Kubernetes Service:** `172.xx.x.0/16`
 - **Acesso ao API Server:** Public and private
 
 ### 📊 Observabilidade
@@ -127,7 +127,7 @@ Este documento descreve todos os recursos AWS criados via click-ops para o ambie
 
 #### Configuração Geral
 
-- **Nome:** `lab-nodegroup-a`
+- **Nome:** `lab-nodegroup-xxxxxxxxxx`
 - **EC2 Launch Template:** ❌ Off
 
 #### 💻 Computação e Scaling
@@ -162,9 +162,9 @@ Este documento descreve todos os recursos AWS criados via click-ops para o ambie
 
 #### 🌐 Configuração de Rede dos Node Groups
 
-- `subnet-59af233f`
-- `subnet-931c97b2`
-- `subnet-7564b444`
+- `subnet-xxxxxxxxxx`
+- `subnet-xxxxxxxxxx`
+- `subnet-xxxxxxxxxx`
 
 ---
 
@@ -181,24 +181,24 @@ Este documento descreve todos os recursos AWS criados via click-ops para o ambie
 ```mermaid
 graph TB
     subgraph "🏗️ Infraestrutura Base"
-        VPC[🌐 VPC Labs<br/>172.31.0.0/16]
+        VPC[🌐 VPC Labs<br/>172.xx.x.0/16]
         SUBNETS[🔗 Subnets<br/>5 AZs]
         ROLES[🔐 IAM Roles<br/>Control Plane & Nodes]
     end
     
     subgraph "🛡️ API & Segurança"
-        APIGW[📡 API Gateway<br/>ku9lj1zme7]
-        AUTH[🔑 Authorizer<br/>token-authorizer]
-        LAMBDA[⚡ Lambda<br/>token-authorizer-apilab]
+        APIGW[📡 API Gateway<br/>xxxxxxxxxx]
+        AUTH[🔑 Authorizer<br/>token-authorizer-xxxxxxxxxx]
+        LAMBDA[⚡ Lambda<br/>lambda-token-authorizer-xxxxxxxxxx]
     end
     
     subgraph "🗄️ Banco de Dados"
-        DYNAMO[🌱 DynamoDB<br/>table-agricultura-minha-horta]
+        DYNAMO[🌱 DynamoDB<br/>table-agricultura-xxxxxxxxxx]
     end
     
     subgraph "☸️ Kubernetes"
-        EKS[🎯 EKS Cluster<br/>lab-eks-cluster v1.33]
-        NODEGROUP[🖥️ Node Group<br/>lab-nodegroup-a]
+        EKS[🎯 EKS Cluster<br/>lab-eks-xxxxxxxxxx v1.33]
+        NODEGROUP[🖥️ Node Group<br/>lab-nodegroup-xxxxxxxxxx]
         ADDONS[🧩 Add-ons<br/>AWS + Community]
     end
     
