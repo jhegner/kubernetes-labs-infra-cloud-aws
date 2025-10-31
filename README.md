@@ -1,2 +1,239 @@
-# kubernetes-labs-infra-cloud-aws
-kubernetes-labs-infra-cloud-aws
+# 🚀 AWS Infrastructure - Click Ops Resources
+
+> **📍 Região:** us-east-1 (N. Virginia)
+
+Este documento descreve todos os recursos AWS criados via click-ops para o ambiente de laboratório Kubernetes.
+
+## 📋 Índice
+
+- [🌐 Rede e VPC](#-rede-e-vpc)
+- [🔐 IAM Roles](#-iam-roles)
+- [🛡️ API Gateway](#️-api-gateway)
+- [⚡ Lambda Functions](#-lambda-functions)
+- [🗄️ DynamoDB](#️-dynamodb)
+- [☸️ Kubernetes (EKS)](#️-kubernetes-eks)
+- [📦 ECR - Container Registry](#-ecr---container-registry)
+- [📊 Diagrama de Dependências](#-diagrama-de-dependências)
+
+---
+
+## 🌐 Rede e VPC
+
+### 🏗️ VPC Principal
+
+- **Nome:** VPC Labs
+- **VPC ID:** `vpc-a6b56ddb`
+- **CIDR:** `172.31.0.0/16`
+
+### 🔗 Subnets e Availability Zones
+
+| Subnet ID         | AZ         | CIDR             | Zona |
+| ----------------- | ---------- | ---------------- | ---- |
+| `subnet-59af233f` | us-east-1a | `172.31.0.0/20`  | az1  |
+| `subnet-931c97b2` | us-east-1b | `172.31.80.0/20` | az2  |
+| `subnet-7564b444` | us-east-1c | `172.31.48.0/20` | az3  |
+| `subnet-fa69e0a5` | us-east-1d | `172.31.32.0/20` | az4  |
+| `subnet-2381c72d` | us-east-1f | `172.31.64.0/20` | az5  |
+
+---
+
+## 🔐 IAM Roles
+
+- 👤 `lab-role-aws-controlplane-managed`
+- 🖥️ `lab-role-aws-ec2nodes-use-services`
+
+---
+
+## 🛡️ API Gateway
+
+### 📡 API Lab
+
+- **API ID:** `ku9lj1zme7`
+- **Endpoint:** `https://ku9lj1zme7.execute-api.us-east-1.amazonaws.com/`
+
+### 🔑 Authorizer
+
+- **Nome:** `token-authorizer-apilab`
+
+---
+
+## ⚡ Lambda Functions
+
+- 🔐 `lambda-token-authorizer-apilab`
+
+---
+
+## 🗄️ DynamoDB
+
+### 🌱 Tabela de Agricultura
+
+- **Nome:** `table-agricultura-minha-horta`
+- **📚 Fonte de Dados:** [Picture This AI](https://www.picturethisai.com/pt/wiki)
+
+---
+
+## ☸️ Kubernetes (EKS)
+
+### ⚙️ Configuração do Cluster
+
+| Parâmetro                    | Valor                              |
+| ---------------------------- | ---------------------------------- |
+| **Nome**                     | `lab-eks-cluster`                  |
+| **Versão**                   | 1.33                               |
+| **Política de Upgrade**      | Standard support                   |
+| **Acesso ao Cluster**        | Allow cluster administrator access |
+| **Modo de Autenticação**     | EKS API                            |
+| **ARC Zonal Shift**          | ❌ Disabled                         |
+| **Proteção contra Exclusão** | ❌ Off                              |
+| **Tags**                     | `lab:kubernetes`                   |
+
+### 🌐 Configuração de Rede
+
+- **VPC ID:** `vpc-a6b56ddb` (default)
+- **Subnets:**
+  - `subnet-59af233f`
+  - `subnet-931c97b2`
+  - `subnet-7564b444`
+- **Security Groups:** EKS cria automaticamente
+- **Família de Endereços IP:** IPv4
+- **Range de IPs do Kubernetes Service:** `172.20.0.0/16`
+- **Acesso ao API Server:** Public and private
+
+### 📊 Observabilidade
+
+- **CloudWatch Metrics:** ✅ Habilitado
+
+### 🧩 Add-ons
+
+#### AWS Managed Add-ons
+
+- ✅ CoreDNS
+- ✅ Node monitoring agent
+- ✅ Amazon VPC CNI
+- ✅ kube-proxy
+- ✅ Amazon CloudWatch Observability
+- ✅ Amazon EBS CSI Driver
+- ✅ Amazon EKS Pod Identity Agent
+
+#### Community Add-ons
+
+- ✅ External DNS
+- ✅ Kube State Metrics
+- ✅ Cert Manager
+- ✅ Fluent Bit
+- ✅ Metrics Server
+
+### 🖥️ Node Groups
+
+#### Configuração Geral
+
+- **Nome:** `lab-nodegroup-a`
+- **EC2 Launch Template:** ❌ Off
+
+#### 💻 Computação e Scaling
+
+| Parâmetro           | Valor               |
+| ------------------- | ------------------- |
+| **AMI Type**        | Bottlerocket x86_64 |
+| **Capacity Type**   | Spot                |
+| **Instance Type**   | t3.medium           |
+| **Quantidade**      | 3                   |
+| **vCPUs**           | 2                   |
+| **Arquitetura**     | x86_64              |
+| **Memória**         | 4 GiB               |
+| **Disk Size (EBS)** | 20 GiB              |
+
+#### 📈 Configuração de Scaling
+
+| Parâmetro        | Valor |
+| ---------------- | ----- |
+| **Desired Size** | 3     |
+| **Minimum Size** | 3     |
+| **Maximum Size** | 3     |
+
+#### 🔄 Configuração de Update
+
+| Parâmetro                     | Valor   |
+| ----------------------------- | ------- |
+| **Maximum Unavailable Type**  | Number  |
+| **Maximum Unavailable Value** | 1       |
+| **Update Strategy**           | Default |
+| **Auto Repair**               | ❌ Off   |
+
+#### 🌐 Configuração de Rede dos Node Groups
+
+- `subnet-59af233f`
+- `subnet-931c97b2`
+- `subnet-7564b444`
+
+---
+
+## 📦 ECR - Container Registry
+
+- **Repository Name:** `xxxxxxxx.dkr.ecr.us-east-1.amazonaws.com/xxxxxxxx`
+- **Image Tag Mutability:** Mutable
+- **Encryption Settings:** AES-256
+
+---
+
+## 📊 Diagrama de Dependências
+
+```mermaid
+graph TB
+    subgraph "🏗️ Infraestrutura Base"
+        VPC[🌐 VPC Labs<br/>172.31.0.0/16]
+        SUBNETS[🔗 Subnets<br/>5 AZs]
+        ROLES[🔐 IAM Roles<br/>Control Plane & Nodes]
+    end
+    
+    subgraph "🛡️ API & Segurança"
+        APIGW[📡 API Gateway<br/>ku9lj1zme7]
+        AUTH[🔑 Authorizer<br/>token-authorizer]
+        LAMBDA[⚡ Lambda<br/>token-authorizer-apilab]
+    end
+    
+    subgraph "🗄️ Banco de Dados"
+        DYNAMO[🌱 DynamoDB<br/>table-agricultura-minha-horta]
+    end
+    
+    subgraph "☸️ Kubernetes"
+        EKS[🎯 EKS Cluster<br/>lab-eks-cluster v1.33]
+        NODEGROUP[🖥️ Node Group<br/>lab-nodegroup-a]
+        ADDONS[🧩 Add-ons<br/>AWS + Community]
+    end
+    
+    subgraph "📦 Container Registry"
+        ECR[📦 ECR<br/>Container Images]
+    end
+    
+    %% Dependências
+    VPC --> SUBNETS
+    VPC --> EKS
+    SUBNETS --> EKS
+    SUBNETS --> NODEGROUP
+    ROLES --> EKS
+    ROLES --> NODEGROUP
+    EKS --> NODEGROUP
+    EKS --> ADDONS
+    APIGW --> AUTH
+    AUTH --> LAMBDA
+    LAMBDA --> DYNAMO
+    ECR --> NODEGROUP
+    
+    %% Estilo
+    classDef infra fill:#e1f5fe
+    classDef api fill:#fff3e0
+    classDef db fill:#f3e5f5
+    classDef k8s fill:#e8f5e8
+    classDef registry fill:#fce4ec
+    
+    class VPC,SUBNETS,ROLES infra
+    class APIGW,AUTH,LAMBDA api
+    class DYNAMO db
+    class EKS,NODEGROUP,ADDONS k8s
+    class ECR registry
+```
+
+---
+
+**📝 Nota:** Este documento reflete a configuração atual dos recursos criados via click-ops. Para automação futura, considere migrar para Infrastructure as Code (IaC) usando Terraform ou CloudFormation.
