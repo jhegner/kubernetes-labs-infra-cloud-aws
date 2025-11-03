@@ -13,7 +13,7 @@ Este documento descreve todos os recursos AWS criados via click-ops para o ambie
 - [🗄️ DynamoDB](#️-dynamodb)
 - [☸️ Kubernetes (EKS)](#️-kubernetes-eks)
 - [📦 ECR - Container Registry](#-ecr---container-registry)
-- [📊 Diagrama de Dependências](#-diagrama-de-dependências)
+- [🏗️ Arquitetura da Solução](#-arquitetura-da-solução)
 
 ---
 
@@ -65,10 +65,16 @@ Este documento descreve todos os recursos AWS criados via click-ops para o ambie
 
 ## 🗄️ DynamoDB
 
+### 🔐 Tabela de Autorização de Tokens
+
+- **Nome:** `table-api-token-authorizer-xxxxxxxxxx`
+- **🎯 Uso:** Validação de tokens pela função Lambda Authorizer
+
 ### 🌱 Tabela de Agricultura
 
 - **Nome:** `table-agricultura-xxxxxxxxxx`
 - **📚 Fonte de Dados:** [Picture This AI](https://www.picturethisai.com/pt/wiki)
+- **🎯 Uso:** Dados acessados por aplicações no cluster Kubernetes
 
 ---
 
@@ -176,10 +182,14 @@ Este documento descreve todos os recursos AWS criados via click-ops para o ambie
 
 ---
 
-## 📊 Diagrama de Dependências
+## 🏗️ Arquitetura da Solução
 
 ```mermaid
 graph TB
+    subgraph "👥 Usuários"
+        USER[👤 Usuário Externo<br/>Cliente/Aplicação]
+    end
+    
     subgraph "🏗️ Infraestrutura Base"
         VPC[🌐 VPC Labs<br/>172.xx.x.0/16]
         SUBNETS[🔗 Subnets<br/>5 AZs]
@@ -193,13 +203,16 @@ graph TB
     end
     
     subgraph "🗄️ Banco de Dados"
-        DYNAMO[🌱 DynamoDB<br/>table-agricultura-xxxxxxxxxx]
+        DYNAMO_AUTH[🔐 DynamoDB Auth<br/>table-api-token-authorizer-xxxxxxxxxx]
+        DYNAMO_AGRI[🌱 DynamoDB Agricultura<br/>table-agricultura-xxxxxxxxxx]
     end
     
     subgraph "☸️ Kubernetes"
         EKS[🎯 EKS Cluster<br/>lab-eks-xxxxxxxxxx v1.33]
         NODEGROUP[🖥️ Node Group<br/>lab-nodegroup-xxxxxxxxxx]
         ADDONS[🧩 Add-ons<br/>AWS + Community]
+        APP[🚀 Aplicação<br/>Serviço no Kubernetes]
+        SERVICE[🌐 Serviço Exposto<br/>API/Aplicação Pública]
     end
     
     subgraph "📦 Container Registry"
@@ -207,6 +220,7 @@ graph TB
     end
     
     %% Dependências
+    USER --> APIGW
     VPC --> SUBNETS
     VPC --> EKS
     SUBNETS --> EKS
@@ -215,22 +229,28 @@ graph TB
     ROLES --> NODEGROUP
     EKS --> NODEGROUP
     EKS --> ADDONS
+    EKS --> APP
+    EKS --> SERVICE
     APIGW --> AUTH
+    APIGW --> SERVICE
     AUTH --> LAMBDA
-    LAMBDA --> DYNAMO
+    LAMBDA --> DYNAMO_AUTH
+    APP --> DYNAMO_AGRI
     ECR --> NODEGROUP
     
     %% Estilo
+    classDef user fill:#e8f5e8
     classDef infra fill:#e1f5fe
     classDef api fill:#fff3e0
     classDef db fill:#f3e5f5
     classDef k8s fill:#e8f5e8
     classDef registry fill:#fce4ec
     
+    class USER user
     class VPC,SUBNETS,ROLES infra
     class APIGW,AUTH,LAMBDA api
-    class DYNAMO db
-    class EKS,NODEGROUP,ADDONS k8s
+    class DYNAMO_AUTH,DYNAMO_AGRI db
+    class EKS,NODEGROUP,ADDONS,APP,SERVICE k8s
     class ECR registry
 ```
 
