@@ -18,7 +18,6 @@ provider "aws" {
 module "gateway" {
   source = "../../modules/gateway"
 
-  gateway_id     = "ku9lj1zme7"
   gateway_name   = "kubernetes-labs-gateway"
   create_gateway = true
 }

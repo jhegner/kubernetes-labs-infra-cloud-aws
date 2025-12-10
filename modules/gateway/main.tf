@@ -1,23 +1,9 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 6.0"
-    }
-  }
-}
-
-# Configure the AWS Provider
-provider "aws" {
-  region = local.region
-}
-
 # Recurso do API Gateway - criado apenas se não existir
 resource "aws_api_gateway_rest_api" "kubernetes_labs_gateway" {
   count = local.should_create_gateway ? 1 : 0
 
   name        = var.gateway_name
-  description = "API Gateway para Kubernetes Labs - ID: ${var.gateway_id}"
+  description = "API Gateway para Kubernetes Labs"
 
   endpoint_configuration {
     types = ["REGIONAL"]
@@ -26,7 +12,6 @@ resource "aws_api_gateway_rest_api" "kubernetes_labs_gateway" {
   tags = {
     Name        = var.gateway_name
     Environment = "labs"
-    GatewayId   = var.gateway_id
     ManagedBy   = "terraform"
   }
 }
@@ -55,8 +40,8 @@ resource "aws_api_gateway_stage" "gateway_stage" {
   tags = {
     Name        = "${var.gateway_name}-lab"
     Environment = "labs"
-    GatewayId   = var.gateway_id
     ManagedBy   = "terraform"
+    lab         = "kubernetes"
   }
 }
 

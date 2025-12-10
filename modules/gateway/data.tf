@@ -4,7 +4,13 @@ data "aws_resourcegroupstaggingapi_resources" "existing_gateways" {
   resource_type_filters = ["apigateway:restapis"]
 
   tag_filter {
-    key    = "GatewayId"
-    values = [var.gateway_id]
+    key    = local.tag_key_name
+    values = [local.tag_filter]
   }
+}
+
+# Consulta um API Gateway específico pelo nome (exemplo adicional)
+data "aws_api_gateway_rest_api" "kubernetes_labs_api" {
+  name   = local.api_name
+  region = local.region
 }

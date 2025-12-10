@@ -1,7 +1,6 @@
 variable "gateway_id" {
   description = "ID específico do gateway a ser verificado"
   type        = string
-  default     = "ku9lj1zme7"
 }
 
 variable "gateway_name" {
